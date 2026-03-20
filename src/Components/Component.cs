@@ -173,11 +173,6 @@ public class Component : IDisposable
         this.handle = new Handle(handle);
     }
 
-    ~Component()
-    {
-        Dispose();
-    }
-
     private static class Native
     {
         [DllImport(Engine.LibraryName)]
