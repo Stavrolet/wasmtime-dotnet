@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace Wasmtime.Components;
+namespace Wasmtime.Component;
 
 /// <summary>
 /// Represents a WebAssembly Component
@@ -48,7 +48,7 @@ public class Component : IDisposable
                 {
                     throw WasmtimeException.FromOwnedError(error);
                 }
-                
+
                 return new Component(handle);
             }
         }
@@ -64,7 +64,7 @@ public class Component : IDisposable
     {
         return FromBytes(engine, File.ReadAllBytes(path));
     }
-    
+
     /// <summary>
     /// Creates a <see cref="Component"/> from a stream.
     /// </summary>
@@ -82,7 +82,7 @@ public class Component : IDisposable
         stream.CopyTo(ms);
         return FromBytes(engine, ms.ToArray());
     }
-    
+
     /// <summary>
     /// Serializes the component to an array of bytes.
     /// </summary>
@@ -99,16 +99,16 @@ public class Component : IDisposable
         {
             var len = (int)array.size;
             var bytes = new byte[len];
-            
+
             unsafe
             {
                 Marshal.Copy((IntPtr)array.data, bytes, 0, len);
             }
-            
+
             return bytes;
         }
     }
-    
+
     /// <summary>
     /// Deserializes a previously serialized component from a span of bytes.
     /// </summary>
@@ -137,7 +137,7 @@ public class Component : IDisposable
             }
         }
     }
-    
+
     /// <summary>
     /// Deserializes a previously serialized component from a file.
     /// </summary>
@@ -180,13 +180,13 @@ public class Component : IDisposable
 
         [DllImport(Engine.LibraryName)]
         public static extern void wasmtime_component_delete(IntPtr module);
-        
+
         [DllImport(Engine.LibraryName)]
         public static extern IntPtr wasmtime_component_serialize(Handle component, out ByteArray bytes);
-        
+
         [DllImport(Engine.LibraryName)]
         public static extern unsafe IntPtr wasmtime_component_deserialize(Engine.Handle engine, byte* bytes, nuint size, out IntPtr handle);
-        
+
         [DllImport(Engine.LibraryName)]
         public static extern IntPtr wasmtime_component_deserialize_file(Engine.Handle component, [MarshalAs(Extensions.LPUTF8Str)] string path, out IntPtr handle);
     }

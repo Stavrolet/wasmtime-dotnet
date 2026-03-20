@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
 using System.Reflection;
 using Xunit;
-using Wasmtime.Components;
 
-namespace Wasmtime.Tests.Components;
+namespace Wasmtime.Tests.Component;
 
 public class ComponentLoadTests
 {
@@ -14,6 +13,6 @@ public class ComponentLoadTests
         stream.Should().NotBeNull();
 
         using var engine = new Engine();
-        Component.FromStream(engine, stream).Should().NotBeNull();
+        Wasmtime.Component.Component.FromStream(engine, stream).Should().NotBeNull();
     }
 }
