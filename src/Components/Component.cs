@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace Wasmtime.Component;
+namespace Wasmtime.Components;
 
 /// <summary>
 /// Represents a WebAssembly Component
@@ -165,6 +165,7 @@ public class Component : IDisposable
     public void Dispose()
     {
         handle.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     internal Component(IntPtr handle)
@@ -172,10 +173,15 @@ public class Component : IDisposable
         this.handle = new Handle(handle);
     }
 
+    ~Component()
+    {
+        Dispose();
+    }
+
     private static class Native
     {
         [DllImport(Engine.LibraryName)]
-        public static extern unsafe IntPtr wasmtime_component_new(Engine.Handle engine, byte* bytes, UIntPtr size, out IntPtr handle);
+        public static extern unsafe IntPtr wasmtime_component_new(Engine.Handle engine, byte* bytes, nuint size, out IntPtr handle);
 
         [DllImport(Engine.LibraryName)]
         public static extern void wasmtime_component_delete(IntPtr module);
@@ -184,7 +190,7 @@ public class Component : IDisposable
         public static extern IntPtr wasmtime_component_serialize(Handle component, out ByteArray bytes);
         
         [DllImport(Engine.LibraryName)]
-        public static extern unsafe IntPtr wasmtime_component_deserialize(Engine.Handle engine, byte* bytes, UIntPtr size, out IntPtr handle);
+        public static extern unsafe IntPtr wasmtime_component_deserialize(Engine.Handle engine, byte* bytes, nuint size, out IntPtr handle);
         
         [DllImport(Engine.LibraryName)]
         public static extern IntPtr wasmtime_component_deserialize_file(Engine.Handle component, [MarshalAs(Extensions.LPUTF8Str)] string path, out IntPtr handle);
